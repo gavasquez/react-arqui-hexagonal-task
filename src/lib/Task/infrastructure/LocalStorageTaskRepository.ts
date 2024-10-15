@@ -1,0 +1,37 @@
+import { Task } from '../domain/Task';
+import { TaskRepository } from '../domain/TaskRepository';
+
+
+export const createLocalStorageTaskRepository = (): TaskRepository => {
+
+  return {
+    getAll: () => {
+      const tasks = localStorage.getItem('tasks');
+      const parsedTasks = tasks ? JSON.parse(tasks) as Task[]: [];
+      return parsedTasks;
+    },
+    save: (task: Task) => {
+      const tasks = localStorage.getItem('tasks');
+      const parsedTasks = tasks ? JSON.parse(tasks) as Task[]: [];
+
+      const taskExists = parsedTasks.findIndex((t) => t.id === task.id);
+
+      // Actualizar
+      if(taskExists !== -1) {
+        parsedTasks[taskExists] = task;
+      }else { // Creación
+        parsedTasks.push(task);
+      }
+
+      localStorage.setItem('tasks', JSON.stringify(parsedTasks));
+    },
+    delete: (id: string) => {
+      const tasks = localStorage.getItem('tasks');
+      const parsedTasks = tasks ? JSON.parse(tasks) as Task[]: [];
+
+      const newTasks = parsedTasks.filter((t) => t.id !== id);
+
+      localStorage.setItem('tasks', JSON.stringify(newTasks));
+    }
+  }
+}
