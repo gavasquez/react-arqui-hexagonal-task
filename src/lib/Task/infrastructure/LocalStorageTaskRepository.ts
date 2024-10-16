@@ -8,7 +8,7 @@ export const createLocalStorageTaskRepository = (): TaskRepository => {
     getAll: () => {
       const tasks = localStorage.getItem('tasks');
       const parsedTasks = tasks ? JSON.parse(tasks) as Task[]: [];
-      return parsedTasks;
+      return Promise.resolve(parsedTasks);
     },
     save: (task: Task) => {
       const tasks = localStorage.getItem('tasks');
@@ -24,6 +24,7 @@ export const createLocalStorageTaskRepository = (): TaskRepository => {
       }
 
       localStorage.setItem('tasks', JSON.stringify(parsedTasks));
+      return Promise.resolve();
     },
     delete: (id: string) => {
       const tasks = localStorage.getItem('tasks');
@@ -32,6 +33,7 @@ export const createLocalStorageTaskRepository = (): TaskRepository => {
       const newTasks = parsedTasks.filter((t) => t.id !== id);
 
       localStorage.setItem('tasks', JSON.stringify(newTasks));
+      return Promise.resolve();
     }
   }
 }
